@@ -1,18 +1,24 @@
 #!/bin/bash
 
+export PYTHONPATH=.
+
 api_key="8def8567d05fa247c9a721214c6bbd107408 "
 email='pengyifan.mail@gmail.com'
 
 #api_key="0530ab6a813bee8d2d5de7929db6e6796809 "
 #email='yifan.peng@nih.gov'
 
-source_dir='/home/pengy6/Subjects/PMCFigureX/'
-top_dir='/home/pengy6/data/covid19/covid'
+source_dir='/home/yip4002/Subjects/PMCFigureX/'
+venv_dir='/home/yip4002/Subjects/venvs/PMCFigureX'
+cd $source_dir || exit
+source "$venv_dir/bin/activate"
+
+top_dir='/home/yip4002/data/covid'
 figure_separation_model=$top_dir/../models/figure-separation-model-submitted-544.pb
 cxr_ct_model=$top_dir/../models/normal_cxr_ct_label_densenet121_bs32_h214_w214_2020-04-13T0026_best_model.h5
 
-prefix='06102020.litcovid'
-data_dir=$top_dir/'06102020'
+prefix='08082020.litcovid'
+data_dir=$top_dir/'08082020'
 
 history_prefix='05092020.litcovid'
 history_data_dir=$top_dir/'05092020'
@@ -35,18 +41,26 @@ history_pmc_file=$history_data_dir/$history_prefix.pmc.csv
 history_gold_file=$history_data_dir/$history_prefix.local_subfigures_gold.csv
 
 bioc_dir=$data_dir/../bioc
-medline_dir=$data_dir/../medline
-figure_dir=$data_dir/../figures
-subfigure_dir=$data_dir/../subfigures_json
+[ -d $bioc_dir ] || mkdir $bioc_dir
 
-cd $source_dir || exit
-source venv/bin/activate
+medline_dir=$data_dir/../medline
+[ -d $medline_dir ] || mkdir $medline_dir
+
+figure_dir=$data_dir/../figures
+[ -d $figure_dir ] || mkdir $figure_dir
+
+subfigure_dir=$data_dir/../subfigures_json
+[ -d $subfigure_dir ] || mkdir subfigure_dir
 
 while [ "$1" != "" ]; do
   case "$1" in
     'step1' )
       echo "step1: Get PMC ID from PubMed"
-      python figurex/get_pmc_from_pubmed.py -i $litcovid_file -o $pmc_file -l $history_pmc_file
+      if [[ -f $history_pmc_file ]]; then
+        python figurex/get_pmc_from_pubmed.py -i $litcovid_file -o $pmc_file -l $history_pmc_file
+      else
+        python figurex/get_pmc_from_pubmed.py -i $litcovid_file -o $pmc_file
+      fi
       ;;
     'step2' )
       echo "step2: Get BioC files"
