@@ -17,6 +17,7 @@ import docopt
 import tqdm
 
 from figurex_db.db_utils import DBHelper, select_helper
+from figurex_db.sqlite_stmt import sql_select_empty_bioc, sql_update_articles
 from figurex_db.utils import generate_path
 
 
@@ -27,20 +28,6 @@ def get_bioc(pmid, dest):
     text = data.decode('utf-8')
     with open(dest, 'w', encoding='utf8') as fp:
         fp.write(text)
-
-
-sql_select_empty_bioc = """
-SELECT pmcid, pmid 
-FROM   Articles 
-WHERE  has_bioc IS NULL 
-AND    pmid IS NOT NULL;
-"""
-
-sql_update_articles = """
-UPDATE Articles 
-SET    has_bioc = ? 
-WHERE  pmcid = ?;
-"""
 
 
 def get_bioc_f(db_file, bioc_dir):

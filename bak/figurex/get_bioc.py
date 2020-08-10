@@ -16,7 +16,7 @@ import docopt
 import pandas as pd
 import tqdm
 
-from figurex.utils import is_file_not_empty
+from bak.figurex import is_file_not_empty
 
 
 def get_bioc(pmid, dest):

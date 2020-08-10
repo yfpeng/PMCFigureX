@@ -17,6 +17,8 @@ import docopt
 import tqdm
 
 from figurex_db.db_utils import DBHelper, select_helper
+from figurex_db.sqlite_stmt import sql_select_new_bioc, sql_insert_figure, sql_update_has_figure1, \
+    sql_update_has_figure0
 from figurex_db.utils import generate_path
 
 FIG_PASSAGE = {"fig_caption",
@@ -43,46 +45,6 @@ def get_figure_link(biocfile) -> List[str]:
     return figures
 
 
-sql_select_new_bioc = """
-SELECT      DISTINCT t1.pmcid
-FROM        Articles AS t1
-LEFT JOIN   Figures AS t2
-ON          t1.pmcid = t2.pmcid
-WHERE       t2.pmcid IS NULL 
-AND         t1.has_bioc = 1
-AND         (t1.has_figure == 1 OR t1.has_figure IS NULL);
-"""
-
-sql_insert_figure = """
-INSERT INTO Figures(pmcid, figure_name, insert_time) 
-VALUES      (?,?,?);
-"""
-
-sql_update_has_figure1 = """
-UPDATE Articles
-SET    has_figure = 1
-WHERE  pmcid IN (
-    SELECT    a.pmcid
-    FROM      Articles AS a
-    LEFT JOIN Figures AS f
-    ON        a.pmcid = f.pmcid
-    WHERE     f.pmcid IS NOT NULL
-    AND       a.has_bioc = 1);
-"""
-
-sql_update_has_figure0 = """
-UPDATE Articles
-SET    has_figure = 0
-WHERE  pmcid IN (
-    SELECT    a.pmcid
-    FROM      Articles AS a
-    LEFT JOIN Figures AS f
-    ON        a.pmcid = f.pmcid
-    WHERE     f.pmcid IS NULL
-    AND       a.has_bioc = 1);
-"""
-
-
 def get_figure_url(db_file, bioc_dir):
     conn = sqlite3.connect(db_file)
 
@@ -97,15 +59,18 @@ def get_figure_url(db_file, bioc_dir):
         insert_helper.extend(set([(pmcid, figure_name, insert_time) for figure_name in figure_names]))
     insert_helper.finish()
 
-    # update has_figure
+    conn.close()
+
+
+def update_has_figure(db_file):
+    conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute(sql_update_has_figure0)
     c.execute(sql_update_has_figure1)
     conn.commit()
 
-    conn.close()
-
 
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
     get_figure_url(args['-d'], Path(args['-b']))
+    update_has_figure(args['-d'])

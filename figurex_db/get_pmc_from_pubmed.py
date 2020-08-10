@@ -19,6 +19,7 @@ import requests
 import tqdm
 
 from figurex_db.db_utils import select_helper, DBHelper
+from figurex_db.sqlite_stmt import sql_insert_articles, sql_select_articles
 
 
 def get_pmc_from_pmid(pmids: List[str]) -> Dict:
@@ -36,25 +37,19 @@ def get_pmc_from_pmid(pmids: List[str]) -> Dict:
     return rst
 
 
-sql_insert_articles_stmt = """
-INSERT INTO Articles(pmcid, pmid, doi, insert_time) 
-VALUES      (?,?,?,?);
-"""
-
-
 def get_pmc_from_pmid_f(src, db_file):
     litcovid_df = pd.read_csv(src, sep='\t', dtype=str, comment='#')
 
     new_pmids = set(litcovid_df['pmid'])
     conn = sqlite3.connect(db_file)
 
-    history_df = select_helper(conn, 'SELECT pmid FROM Articles;', columns=['pmid'])
+    history_df = select_helper(conn, sql_select_articles, columns=['pmid'])
     new_pmids = new_pmids - set(history_df['pmid'])
 
     insert_time = f'{datetime.datetime.now():%Y-%m-%d-%H-%M-%S}'
     pmids = list(new_pmids)
 
-    insert_articles_helper = DBHelper(conn, sql_insert_articles_stmt)
+    insert_articles_helper = DBHelper(conn, sql_insert_articles)
     insert_articles_helper.start()
     for i in tqdm.tqdm(range(0, len(pmids), 200)):
         results = get_pmc_from_pmid(pmids[i: i + 200])

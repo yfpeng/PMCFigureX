@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import re
 
@@ -39,4 +40,5 @@ def parse_figure_path(pathname: str):
             'local_figure_name': local_figure_name}
 
 
-# print(generate_path('PMC7291160'))
+def is_file_empty(pathname):
+    return os.path.exists(pathname) and os.stat(pathname).st_size == 0

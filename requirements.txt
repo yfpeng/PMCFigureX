@@ -8,3 +8,5 @@ Pillow
 tensorflow==2.2.0
 keras
 tabulate
+opencv-python
+nltk

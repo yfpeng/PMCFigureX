@@ -17,20 +17,10 @@ import docopt
 import tqdm
 from PIL import Image
 
+from figurex_db import ppprint
 from figurex_db.db_utils import select_helper, DBHelper
+from figurex_db.sqlite_stmt import sql_get_empty_figures, sql_update_figure_size
 from figurex_db.utils import generate_path
-
-sql_get_empty_figures = """
-SELECT pmcid, figure_name
-FROM   Figures
-WHERE  width IS NULL;
-"""
-
-sql_update_figure_size = """
-UPDATE Figures
-SET    width=?, height=?
-WHERE  pmcid=? AND figure_name=?
-"""
 
 
 def get_figures(db_file, image_dir):
@@ -63,8 +53,7 @@ def get_figures(db_file, image_dir):
     update_figure_helper.finish()
     conn.close()
 
-    for k, v in cnt.most_common():
-        print(k, ':', v)
+    ppprint.pprint_counter(cnt)
 
 
 if __name__ == '__main__':

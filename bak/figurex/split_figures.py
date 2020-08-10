@@ -22,8 +22,8 @@ import tensorflow as tf
 import tqdm
 from PIL import Image
 
-from figurex.figure_separator import FigureSeparator
-from figurex.utils import is_file_empty
+from bak.figurex import FigureSeparator
+from bak.figurex import is_file_empty
 
 
 def split_figure(src, subfigures, dest_dir, min_width=214, min_height=214):
@@ -47,31 +47,49 @@ def split_figure(src, subfigures, dest_dir, min_width=214, min_height=214):
     return filenames
 
 
-def split_figure_f(src, dest, src_image_dir, dest_image_dir, dest_json_dir, model_pathname):
-    tf.compat.v1.disable_eager_execution()
-    separator = FigureSeparator(str(model_pathname))
+def split_figure_f(src, dest, src_image_dir, dest_image_dir, dest_json_dir, model_pathname, batch_size=64):
     figure_df = pd.read_csv(src)
     data = []
     cnt = collections.Counter()
 
-    for _, row in tqdm.tqdm(figure_df.iterrows(), total=len(figure_df)):
-        src = src_image_dir / row['figure filename']
-        if is_file_empty(src):
-            cnt['empty figure'] += 1
-            continue
+    tf.compat.v1.disable_eager_execution()
+    separator = FigureSeparator(str(model_pathname))
 
+    with tf.compat.v1.Session(graph=separator.graph) as sess:
+        needs_to_split = []
+
+        def split_and_save():
+            results = separator.extract_batch(sess, needs_to_split)
+            assert len(results) == len(needs_to_split)
+            for src, result in zip(needs_to_split, results):
+                subfigures = result['sub_figures']
+                json_dst = dest_json_dir / f'{src.stem}.json'
+                with open(json_dst, 'w') as fp:
+                    json.dump(subfigures, fp)
+
+        for filename in tqdm.tqdm(figure_df['figure filename'], total=len(figure_df), desc='Check subfigures'):
+            src = src_image_dir / filename
+            if is_file_empty(src):
+                cnt['empty figure'] += 1
+                continue
+            json_dst = dest_json_dir / f'{src.stem}.json'
+            if not json_dst.exists():
+                needs_to_split.append(src)
+
+            if len(needs_to_split) >= batch_size:
+                split_and_save()
+                needs_to_split = []
+        if len(needs_to_split) > 0:
+            split_and_save()
+
+    for _, row in tqdm.tqdm(figure_df.iterrows(), total=len(figure_df), desc='Write sub figures'):
+        src = src_image_dir / row['figure filename']
         json_dst = dest_json_dir / f'{src.stem}.json'
         if not json_dst.exists():
-            # print(src)
-            try:
-                subfigures, _ = separator.extract(src)
-            except:
-                subfigures = []
-            with open(json_dst, 'w') as fp:
-                json.dump(subfigures, fp)
-        else:
-            with open(json_dst) as fp:
-                subfigures = json.load(fp)
+            continue
+
+        with open(json_dst) as fp:
+            subfigures = json.load(fp)
 
         pathnames = split_figure(src, subfigures, dest_image_dir, 214, 214)
         # subfigure
@@ -107,22 +125,3 @@ if __name__ == '__main__':
                    dest_json_dir=Path(args['-s']),
                    model_pathname=Path(args['-m']))
 
-
-# if __name__ == '__main__':
-#
-#
-#
-#     model_pathname = ppathlib.data() / 'covid19/models/figure-separation-model-submitted-544.pb'
-#
-#     top = ppathlib.data() / 'covid19/covid'
-#     prefix = '05092020.litcovid'
-#     #
-#     # top = ppathlib.data() / 'covid19/influenza'
-#     # prefix = '04192020.influenza.10000'
-#
-#     src = top / f'{prefix}.local_figures.csv'
-#     dst = top / f'{prefix}.local_subfigures.csv'
-#     src_image_dir = top / 'figures'
-#     dest_image_dir = top / 'figures'
-#     dest_json_dir = top / 'subfigures_json'
-#     split_figure_f(src, dst, src_image_dir, dest_image_dir, dest_json_dir, model_pathname)

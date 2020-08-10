@@ -17,7 +17,7 @@ import docopt
 import pandas as pd
 import tqdm
 
-from figurex.utils import is_file_not_empty
+from bak.figurex import is_file_not_empty
 
 FIG_PASSAGE = {"fig_caption",
                "fig_title_caption",
