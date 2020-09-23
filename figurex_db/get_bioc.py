@@ -26,6 +26,8 @@ def get_bioc(pmid, dest):
     response = urllib.request.urlopen(url)
     data = response.read()
     text = data.decode('utf-8')
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
     with open(dest, 'w', encoding='utf8') as fp:
         fp.write(text)
 
@@ -40,7 +42,6 @@ def get_bioc_f(db_file, bioc_dir):
     for pmcid, pmid in tqdm.tqdm(zip(df['pmcid'], df['pmid']), total=len(df)):
         cnt['total pmc'] += 1
         dst_dir = bioc_dir / generate_path(pmcid)
-        dst_dir.mkdir(parents=True, exist_ok=True)
         dst = dst_dir / f'{pmcid}.xml'
         if dst.exists():
             update_article_helper.append((1, pmcid))
@@ -61,4 +62,4 @@ def get_bioc_f(db_file, bioc_dir):
 
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
-    get_bioc_f(args['-d'], Path(args['-o']))
+    get_bioc_f(args['-d'], Path(args['-b']))

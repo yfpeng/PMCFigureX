@@ -24,7 +24,7 @@ from figurex_db.sqlite_stmt import sql_insert_articles, sql_select_articles
 
 def get_pmc_from_pmid(pmids: List[str]) -> Dict:
     assert len(pmids) <= 200
-    url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&format=csv&email=yifan.peng@nih.gov&ids='
+    url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?tool=my_tool&format=csv&email=fake@fake.com&ids='
     url += ','.join(pmids)
     x = requests.get(url)
     f = io.StringIO(x.text.strip())
