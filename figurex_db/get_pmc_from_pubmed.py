@@ -9,6 +9,7 @@ Options:
 
 import datetime
 import io
+import os
 import sqlite3
 from pathlib import Path
 from typing import List, Dict
@@ -38,10 +39,10 @@ def get_pmc_from_pmid(pmids: List[str]) -> Dict:
 
 
 def get_pmc_from_pmid_f(src, db_file):
-    litcovid_df = pd.read_csv(src, sep='\t', dtype=str, comment='#')
+    pubmed_export_df = pd.read_csv(src, sep='\t', dtype=str, comment='#')
 
-    new_pmids = set(litcovid_df['pmid'])
-    conn = sqlite3.connect(db_file)
+    new_pmids = set(pubmed_export_df['pmid'])
+    conn = sqlite3.connect(os.path.expanduser(db_file))
 
     history_df = select_helper(conn, sql_select_articles, columns=['pmid'])
     new_pmids = new_pmids - set(history_df['pmid'])
@@ -62,4 +63,4 @@ def get_pmc_from_pmid_f(src, db_file):
 
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
-    get_pmc_from_pmid_f(Path(args['-l']), args['-d'])
+    get_pmc_from_pmid_f(Path(args['-l']), Path(args['-d']))

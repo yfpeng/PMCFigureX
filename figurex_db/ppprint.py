@@ -3,7 +3,7 @@ import pandas as pd
 import tabulate
 
 
-def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t', use_tabulate=True):
+def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t', use_tabulate=True, percentage=False):
     if not sort_key:
         itr = counter.most_common()
     else:
@@ -12,8 +12,11 @@ def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t', us
     total = sum(counter.values())
     data = []
     for k, v in itr:
-        p = '%.1f' % (v / total * 100)
-        data.append({'key': k, 'value': v, '%': p})
+        if percentage:
+            p = '%.1f' % (v / total * 100)
+            data.append({'key': k, 'value': v, '%': p})
+        else:
+            data.append({'key': k, 'value': v})
 
     df = pd.DataFrame(data)
     if use_tabulate:

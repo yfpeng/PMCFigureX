@@ -5,7 +5,7 @@ tqdm
 biopython
 bioc
 Pillow
-tensorflow==2.2.0
+tensorflow
 keras
 tabulate
 opencv-python

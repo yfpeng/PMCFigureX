@@ -53,7 +53,7 @@ def get_figures(db_file, image_dir):
     update_figure_helper.finish()
     conn.close()
 
-    ppprint.pprint_counter(cnt)
+    ppprint.pprint_counter(cnt, percentage=False)
 
 
 if __name__ == '__main__':

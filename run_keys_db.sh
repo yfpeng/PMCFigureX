@@ -1,17 +1,18 @@
 #!/bin/bash
 
+# SET PYTHONPATH=.
 export PYTHONPATH=.
 
-disease='Atelectasis'
+disease='pneumoperitoneum'
 source_dir=$HOME'/Subjects/PMCFigureX'
-venv_dir=$HOME'/Subjects/venvs/PMCFigureX'
-top_dir=$HOME'/Data/Atelectasis'
+venv_dir=$HOME'/Subjects/venv/PMCFigureX'
+top_dir=$HOME'/Data/PMCFigureX'
 
 
 cd $source_dir || exit
 source $venv_dir'/bin/activate'
 
-figure_separation_model=$top_dir/models/figure-separation-model-submitted-544.pb
+figure_separation_model=$top_dir/models/figure-sepration-model-submitted-544.pb
 cxr_ct_model=$top_dir/models/normal_cxr_ct_label_densenet121_bs32_h214_w214_2020-04-13T0026_best_model.h5
 
 # create dir
@@ -23,7 +24,7 @@ database_file=$top_dir/database.db
 prefix=$disease
 # data
 data_dir=$top_dir/$disease
-litcovid_file=$data_dir/$prefix.export.tsv
+pmc_export_file=$data_dir/$prefix.export.tsv
 
 subfigure_file=$data_dir/$prefix.subfigures.csv
 prediction_subfigure_file=$data_dir/$prefix.subfigures_pred.csv
@@ -43,11 +44,10 @@ while [ "$1" != "" ]; do
       ;;
     'step2' )
       echo "step2: Get PMC ID from PubMed"
-      python figurex_db/get_pmc_from_pubmed.py -l $litcovid_file -d $database_file
+      python figurex_db/get_pmc_from_pubmed.py -l $pmc_export_file -d $database_file
       ;;
     'step3' )
       echo "step3: Get BioC files"
-      echo $PWD
       python figurex_db/get_bioc.py -d $database_file -b $bioc_dir
       ;;
     'step4' )
