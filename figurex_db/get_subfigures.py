@@ -86,7 +86,7 @@ def get_subfigure_f(db_file, image_dir, subfigures_dst):
         figure_file = generate_path(pmcid) / '{}_{}'.format(pmcid, figure_name)
         dst = figure_file.parent / f'{figure_file.stem}_{xtl}x{ytl}_{xbr}x{ybr}{figure_file.suffix}'
         data.append({'pmcid': pmcid,
-                     'figure path': str(dst),
+                     'figure path': str(dst.as_posix()),
                      'xtl': xtl,
                      'ytl': ytl,
                      'xbr': xbr,
@@ -106,7 +106,7 @@ def get_figure_f(db_file, image_dir, figures_dst):
         figure_name = row['figure_name']
         figure_file = generate_path(pmcid) / '{}_{}'.format(pmcid, figure_name)
         data.append({'pmcid': pmcid,
-                     'figure path': str(figure_file),
+                     'figure path': str(figure_file.as_posix()),
                      'xtl': 0,
                      'ytl': 0,
                      'xbr': row['width'],

@@ -56,7 +56,11 @@ class Figure:
 
 
 def get_figure_name(figure_path: str):
-    m = re.search(r'PMC\d+_', figure_path)
+    try:
+        m = re.search(r'PMC\d+_', figure_path)
+    except TypeError:
+        print('Cannot parse', figure_path)
+        raise TypeError
     if not m:
         raise ValueError
     start = m.end()

@@ -10,3 +10,5 @@ keras
 tabulate
 opencv-python
 nltk
+python-docx
+dominate

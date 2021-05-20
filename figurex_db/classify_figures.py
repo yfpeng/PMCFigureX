@@ -25,6 +25,10 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
+def image_exists(fullpath):
+    return os.path.exists(fullpath) and os.path.isfile(fullpath)
+
+
 def detect_normal_cxr_ct(model_pathname, src, dest, image_dir, x_col='filename', history=None,
                          overwrite: bool=True):
     if not overwrite and dest.exists():
@@ -42,6 +46,8 @@ def detect_normal_cxr_ct(model_pathname, src, dest, image_dir, x_col='filename',
     if len(df) != 0:
         df = df.reset_index(drop=True)
         df = df.assign(full_path=df[x_col].apply(lambda x: os.path.join(image_dir, x)))
+        df = df[df["full_path"].apply(image_exists)]
+        df = df.reset_index(drop=True)
         datagen = ImageDataGenerator(preprocessing_function=densenet.preprocess_input)
         generator = datagen.flow_from_dataframe(
             dataframe=df,

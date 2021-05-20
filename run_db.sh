@@ -7,7 +7,7 @@ venv_dir=$HOME'/Subjects/venvs/PMCFigureX'
 cd $source_dir || exit
 source "$venv_dir/bin/activate"
 
-top_dir=$HOME'litcovid'
+top_dir=$HOME/'Data/PMCFigureX'
 figure_separation_model=$top_dir/models/figure-separation-model-submitted-544.pb
 cxr_ct_model=$top_dir/models/normal_cxr_ct_label_densenet121_bs32_h214_w214_2020-04-13T0026_best_model.h5
 
@@ -20,9 +20,9 @@ bioc_dir=$top_dir/bioc
 
 database_file=$top_dir/covid.db
 
-prefix='08082020.litcovid'
+prefix='pneumoperitoneum'
 # data
-data_dir=$top_dir/'08082020'
+data_dir=$top_dir/$prefix
 litcovid_file=$data_dir/$prefix.export.tsv
 
 subfigure_file=$data_dir/$prefix.subfigures.csv
