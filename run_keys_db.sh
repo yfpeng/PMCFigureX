@@ -5,7 +5,7 @@ export PYTHONPATH=.
 
 disease='pneumoperitoneum'
 source_dir=$HOME'/Subjects/PMCFigureX'
-venv_dir=$HOME'/Subjects/venv/PMCFigureX'
+venv_dir=$HOME'/Subjects/venvs/PMCFigureX'
 top_dir=$HOME'/Data/PMCFigureX'
 
 
@@ -33,7 +33,11 @@ figure_file=$data_dir/$prefix.figures.csv
 prediction_figure_file=$data_dir/$prefix.figures_pred.csv
 
 text_file=$data_dir/$prefix.figure_text.json
+docx_file=$data_dir/$prefix.figure_text.docx
 html_file=$data_dir/$prefix.figure_text.html
+bioc_file=$data_dir/$prefix.figure_text.xml
+neg_file=$data_dir/$prefix.figure_text_${prefix}_neg.xml
+
 history_prediction_subfigure_file=None
 history_prediction_figure_file=None
 
@@ -101,7 +105,17 @@ while [ "$1" != "" ]; do
       ;;
     'step10' )
       echo "step10: HTML for demonstration"
-      python figurex_db/convert_to_html.py -f "$bioc_dir" -s "$text_file" -d "$html_file" --disease "$disease"
+#      python figurex_db/convert_to_html.py -f "$bioc_dir" -s "$text_file" -d "$html_file" --disease "$disease"
+      python figurex_db/convert_to_html_neg.py -f "$bioc_dir" -s "$text_file" -d "$html_file" --disease "$disease" \
+        --neg "$neg_file"
+      ;;
+    'step11' )
+      echo "step 11: Convert to docx"
+      pandoc -s -f html -t docx "$html_file" -o "$docx_file"
+      ;;
+    'step12' )
+      echo "step 12: BioC for ptake"
+      python figurex_db/convert_to_bioc.py -s "$text_file" -d "$bioc_file"
       ;;
     * )
       echo "Cannot recognize parameter $1"
