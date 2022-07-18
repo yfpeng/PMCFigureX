@@ -61,7 +61,7 @@ while [ "$1" != "" ]; do
       ;;
     'step5' )
       echo "step5: Download local figures"
-      python figurex_db/get_figures.py -d "$database_file" -f "$bioc_dir"
+      python figurex_db/get_figures2.py -d "$database_file" -f "$bioc_dir"
       ;;
     'step6' )
       echo "step6: Split figures"
