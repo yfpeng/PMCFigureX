@@ -8,7 +8,6 @@ Options:
 """
 
 import collections
-import datetime
 import urllib.error
 from pathlib import Path
 
@@ -16,7 +15,7 @@ import docopt
 import pandas as pd
 import tqdm
 
-from figurex_db import ppprint
+from figurex import ppprint
 from figurex.commons import get_bioc, create_empty_file, generate_path, is_file_empty
 
 

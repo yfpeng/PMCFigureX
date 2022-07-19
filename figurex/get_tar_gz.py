@@ -18,6 +18,7 @@ import docopt
 import pandas as pd
 import tqdm
 from ftplib import FTP
+import urllib.request
 
 
 def get_taz_file(src, oa_file_list, image_dir):
@@ -36,18 +37,20 @@ def get_taz_file(src, oa_file_list, image_dir):
     cnt['Total tar.gz'] = 0
     cnt['New tar.gz'] = 0
 
-    ftp = FTP('ftp.ncbi.nlm.nih.gov')
-    ftp.login()
-    ftp.cwd('pub/pmc')
+    # ftp = FTP('ftp.ncbi.nlm.nih.gov')
+    # ftp.login()
+    # ftp.cwd('pub/pmc')
     for _, row in tqdm.tqdm(oa_file_df_sub.iterrows(), total=len(oa_file_df_sub)):
         pmcid = row['Accession ID']
         local_tgz_file = image_dir / generate_path(pmcid) / f'{pmcid}.tar.gz'
         if not local_tgz_file.exists():
-            with open(local_tgz_file, 'wb') as fp:
-                ftp.retrbinary("RETR " + row['File'], fp.write)
+            ftp_url = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/{}'.format(row['File'])
+            urllib.request.urlretrieve(ftp_url, local_tgz_file)
+            # with open(local_tgz_file, 'wb') as fp:
+            #     ftp.retrbinary("RETR " + row['File'], fp.write)
             cnt['New tar.gz'] += 1
         cnt['Total tar.gz'] += 1
-    ftp.quit()
+    # ftp.quit()
 
     ppprint.pprint_counter(cnt, percentage=False)
 
