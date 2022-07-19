@@ -47,6 +47,7 @@ def get_taz_file(src, oa_file_list, image_dir):
                 ftp.retrbinary("RETR " + row['File'], fp.write)
             cnt['New tar.gz'] += 1
         cnt['Total tar.gz'] += 1
+    ftp.quit()
 
     ppprint.pprint_counter(cnt, percentage=False)
 
