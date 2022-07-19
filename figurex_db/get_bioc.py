@@ -16,20 +16,9 @@ from pathlib import Path
 import docopt
 import tqdm
 
+from figurex.commons import get_bioc, generate_path
 from figurex_db.db_utils import DBHelper, select_helper
 from figurex_db.sqlite_stmt import sql_select_empty_bioc, sql_update_articles
-from figurex_db.utils import generate_path
-
-
-def get_bioc(pmid, dest):
-    url = f'https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_xml/{pmid}/unicode'
-    response = urllib.request.urlopen(url)
-    data = response.read()
-    text = data.decode('utf-8')
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    with open(dest, 'w', encoding='utf8') as fp:
-        fp.write(text)
 
 
 def get_bioc_f(db_file, bioc_dir):

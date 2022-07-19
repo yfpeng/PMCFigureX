@@ -20,7 +20,7 @@ import tqdm
 from PIL import Image
 from dominate.tags import img, h3, p, ul, li, html, body, hr, h1, span, table, tbody, tr, td, head, title
 
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 
 
 def filter_text(text, key):

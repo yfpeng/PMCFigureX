@@ -23,7 +23,7 @@ from PIL import Image
 from figurex_db.db_utils import DBHelper, select_helper
 from figurex_db.sqlite_stmt import sql_select_empty_subfigurejsonfiles, sql_insert_subfigure, sql_select_subfigure, \
     sql_update_has_subfigure1, sql_update_has_subfigure0, sql_select_figure
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 import pandas as pd
 
 Subfigure = collections.namedtuple('Subfigure', 'subfigure_name xtl ytl xbr ybr')

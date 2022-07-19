@@ -20,7 +20,7 @@ from PIL import Image
 from figurex_db import ppprint
 from figurex_db.db_utils import select_helper, DBHelper
 from figurex_db.sqlite_stmt import sql_get_empty_figures, sql_update_figure_size
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 
 
 def get_figures(db_file, image_dir):

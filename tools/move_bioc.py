@@ -12,7 +12,7 @@ from pathlib import Path
 
 import docopt
 import tqdm
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 
 
 def move1(src_dir, dst_dir):

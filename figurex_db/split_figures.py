@@ -19,8 +19,7 @@ import tqdm
 from figurex_db.db_utils import select_helper
 from figurex_db.figure_separator import FigureSeparator
 from figurex_db.sqlite_stmt import sql_select_empty_subfigurejsonfiles
-from figurex_db.utils import generate_path
-from figurex_db.utils import is_file_empty
+from figurex.commons import generate_path, is_file_empty
 
 
 def split_figure_f(db_file, image_dir, model_pathname, batch_size=16):

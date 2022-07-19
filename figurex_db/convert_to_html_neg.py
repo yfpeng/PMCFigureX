@@ -25,7 +25,7 @@ from bioc import BioCDocument
 from dominate.util import raw
 from dominate.tags import img, h3, p, ul, li, html, body, hr, h1, span, table, tbody, tr, td, head, title
 
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 
 
 def has_keyword(bdoc: BioCDocument, disease, include_neg=True):

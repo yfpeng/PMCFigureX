@@ -3,10 +3,6 @@ from pathlib import Path
 import re
 
 
-def generate_path(pmc: str) -> Path:
-    return Path(pmc[:-4] + '/' + pmc[-4:-2])
-
-
 def parse_subfigure_path(pathname: str):
     path = Path(pathname)
     name = path.name
@@ -40,5 +36,3 @@ def parse_figure_path(pathname: str):
             'local_figure_name': local_figure_name}
 
 
-def is_file_empty(pathname):
-    return os.path.exists(pathname) and os.stat(pathname).st_size == 0

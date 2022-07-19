@@ -21,7 +21,7 @@ import pandas as pd
 import tqdm
 from typing import Dict, List, Tuple
 
-from figurex_db.utils import generate_path
+from figurex.commons import generate_path
 
 Subfigure = collections.namedtuple('Subfigure', 'xtl ytl xbr ybr type is_subfig')
 
