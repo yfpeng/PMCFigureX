@@ -33,7 +33,7 @@ while [ "$1" != "" ]; do
       python figurex/query_pubmed.py -q "$query" -o "$pmc_export_file"
       ;;
     'step2' )
-      echo "step4: Download tar gz"
+      echo "step2: Download tar gz"
       step2output=$disease_dir/$prefix.export-step2.csv
       python figurex/get_tar_gz_thread.py -i "$pmc_export_file" -o "$step2output" -a "$oa_file" -f "$bioc_dir"
       ;;
