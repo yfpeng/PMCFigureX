@@ -19,7 +19,8 @@ import pandas as pd
 import tqdm
 
 from figurex import ppprint
-from figurex.commons import get_figure_link, generate_path, is_file_empty
+from figurex.commons import generate_path, is_file_empty
+from bak.figurex2.figure import get_figure_link
 
 
 def get_figure_caption(src, dest, bioc_dir, overwrite=False):
@@ -45,16 +46,18 @@ def get_figure_caption(src, dest, bioc_dir, overwrite=False):
             continue
 
         try:
-            figures = get_figure_link(biocfile)
+            with open(biocfile, 'r', encoding='utf8') as fp:
+                c = bioc.load(fp)
         except Exception as e:
             print(e)
             cnt['Ill-formatted BioC'] += 1
             continue
 
-        for f in figures:
+        figures = get_figure_link(c.documents[0])
+        for figure in figures:
             data.append({
                 'pmcid': pmcid,
-                'figure_name': f,
+                'figure_name': figure,
                 'insert_time': insert_time
             })
 

@@ -17,7 +17,8 @@ import tqdm
 from figurex_db.db_utils import DBHelper, select_helper
 from figurex_db.sqlite_stmt import sql_select_new_bioc, sql_insert_figure, sql_update_has_figure1, \
     sql_update_has_figure0
-from figurex.commons import generate_path, get_figure_link
+from figurex.commons import generate_path
+from bak.figurex2.figure import get_figure_link
 
 
 def get_figure_url(db_file, bioc_dir):
