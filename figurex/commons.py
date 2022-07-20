@@ -22,6 +22,7 @@ def is_file_empty(pathanme):
 
 
 def create_empty_file(pathname):
+    pathname.parent.mkdir(parents=True, exist_ok=True)
     with open(pathname, 'w') as _:
         pass
 

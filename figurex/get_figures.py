@@ -38,19 +38,16 @@ def get_figures(src, image_dir):
             if not local_tgz_file.exists():
                 cnt['Empty tar.gz'] += 1
                 continue
-            has_member = False
             t = tarfile.open(local_tgz_file, 'r')
-            for member in t.getmembers():
-                if member.name == f'{pmcid}/{figure_name}':
-                    r = t.extractfile(member)
-                    with open(local_file, 'wb') as fp:
-                        fp.write(r.read())
-                    cnt['New figures'] += 1
-                    has_member = True
-                    break
-            t.close()
-            if not has_member:
+            filename = f'{pmcid}/{figure_name}'
+            try:
+                r = t.extractfile(filename)
+                with open(local_file, 'wb') as fp:
+                    fp.write(r.read())
+                cnt['New figures'] += 1
+            except:
                 cnt['Missing figures'] += 1
+            t.close()
 
     ppprint.pprint_counter(cnt, percentage=False)
 
