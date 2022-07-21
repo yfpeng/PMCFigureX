@@ -68,7 +68,7 @@ def get_figures(src, dest, image_dir):
             futures.append(executor.submit(extract_figures, local_tgz_file=local_tgz_file, image_dir=image_dir,
                                            pmcid=pmcid))
 
-        for future in concurrent.futures.as_completed(futures):
+        for future in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
             d, new_figures = future.result()
             data.extend(d)
             cnt['New figures'] += new_figures

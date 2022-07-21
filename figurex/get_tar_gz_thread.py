@@ -9,6 +9,7 @@ Options:
     -f <dir>    Figure folder
 """
 import concurrent
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 from figurex import ppprint
@@ -25,8 +26,13 @@ from ftplib import FTP
 
 
 def download_taz_file(ftp_url, dest):
-    # ftp_url = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/{}'.format(row['File'])
-    # urllib.request.urlretrieve(ftp_url, local_tgz_file)
+    # try:
+    #     url = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/{}'.format(ftp_url)
+    #     urllib.request.urlretrieve(url, dest)
+    #     return True
+    # except:
+    #     return False
+
     with FTP('ftp.ncbi.nlm.nih.gov') as ftp:
         ftp.login()
         ftp.cwd('pub/pmc')
@@ -66,7 +72,7 @@ def get_taz_file(src, dest, oa_file_list, output_dir):
                 futures.append(executor.submit(download_taz_file, ftp_url=row['File'], dest=local_tgz_file))
             cnt['Total tar.gz'] += 1
 
-        for future in concurrent.futures.as_completed(futures):
+        for future in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
             if future.result():
                 cnt['New tar.gz'] += 1
             else:
