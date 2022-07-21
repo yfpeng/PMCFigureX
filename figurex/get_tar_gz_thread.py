@@ -26,23 +26,23 @@ from ftplib import FTP
 
 
 def download_taz_file(ftp_url, dest):
-    # try:
-    #     url = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/{}'.format(ftp_url)
-    #     urllib.request.urlretrieve(url, dest)
-    #     return True
-    # except:
-    #     return False
+    try:
+        url = 'https://ftp.ncbi.nlm.nih.gov/pub/pmc/{}'.format(ftp_url)
+        urllib.request.urlretrieve(url, dest)
+        return True
+    except:
+        return False
 
-    with FTP('ftp.ncbi.nlm.nih.gov') as ftp:
-        ftp.login()
-        ftp.cwd('pub/pmc')
-        try:
-            with open(dest, 'wb') as fp:
-                ftp.retrbinary("RETR " + ftp_url, fp.write)
-            return True
-        except Exception as e:
-            print(e)
-            return False
+    # with FTP('ftp.ncbi.nlm.nih.gov') as ftp:
+    #     ftp.login()
+    #     ftp.cwd('pub/pmc')
+    #     try:
+    #         with open(dest, 'wb') as fp:
+    #             ftp.retrbinary("RETR " + ftp_url, fp.write)
+    #         return True
+    #     except Exception as e:
+    #         print(e)
+    #         return False
 
 
 def get_taz_file(src, dest, oa_file_list, output_dir):
