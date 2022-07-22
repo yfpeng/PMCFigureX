@@ -12,6 +12,8 @@ import datetime
 import tarfile
 from concurrent.futures import ThreadPoolExecutor
 
+from PIL import Image
+
 from figurex import ppprint
 from figurex.commons import generate_path
 
@@ -26,6 +28,7 @@ import tqdm
 def extract_figures(local_tgz_file, image_dir, pmcid):
     data = []
     new_figures = 0
+    err_figures = 0
     try:
         with tarfile.open(local_tgz_file, 'r') as t:
             for member in t.getmembers():
@@ -37,13 +40,19 @@ def extract_figures(local_tgz_file, image_dir, pmcid):
                         with open(local_file, 'wb') as fp:
                             fp.write(r.read())
                         new_figures += 1
-                    data.append({
-                        'pmcid': pmcid,
-                        'figure_name': local_file.name,
-                    })
+                    try:
+                        im = Image.open(local_file)
+                        data.append({
+                            'pmcid': pmcid,
+                            'figure_name': local_file.name,
+                            'width': im.width,
+                            'height': im.height,
+                        })
+                    except:
+                        err_figures += 1
     except Exception as e:
         print('%s: %s' % (pmcid, e))
-    return data, new_figures
+    return data, new_figures, err_figures
 
 
 def get_figures(src, dest, image_dir):
@@ -54,6 +63,7 @@ def get_figures(src, dest, image_dir):
     cnt['Total figures'] = 0
     cnt['Empty tar.gz'] = 0
     cnt['New figures'] = 0
+    cnt['Ill-formatted figures'] = 0
 
     data = []
 
@@ -69,10 +79,11 @@ def get_figures(src, dest, image_dir):
                                            pmcid=pmcid))
 
         for future in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
-            d, new_figures = future.result()
+            d, new_figures, err_figures = future.result()
             data.extend(d)
             cnt['New figures'] += new_figures
             cnt['Total figures'] += len(d)
+            cnt['Ill-formatted figures'] += err_figures
 
     df = pd.DataFrame(data)
     df = df.drop_duplicates()
