@@ -90,7 +90,5 @@ def get_subfigure(src, dest, image_dir):
 
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
-    db_file = args['-d']
-    image_dir = Path(args['-f'])
-    get_subfigure(src=Path(args['-i']), dest=args['--ds'], image_dir=image_dir)
+    get_subfigure(src=Path(args['-i']), dest=args['-o'], image_dir=Path(args['-f']))
 

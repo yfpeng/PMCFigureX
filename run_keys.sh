@@ -24,7 +24,7 @@ disease_dir=$data_dir/$disease
 
 pmc_export_file=$disease_dir/$prefix.export2.csv
 figure_file=$disease_dir/$prefix.figures.csv
-subfigure_file=$data_dir/$prefix.subfigures.csv
+subfigure_file=$disease_dir/$prefix.subfigures.csv
 
 
 while [ "$1" != "" ]; do
@@ -43,7 +43,11 @@ while [ "$1" != "" ]; do
       python figurex/extract_figures_thread.py -i "$pmc_export_file" -o "$figure_file" -f "$bioc_dir"
       ;;
     'step4' )
-      echo "step4: Extract subfigures"
+      echo "step4: Segment subfigures"
+      python figurex/segment_subfigures.py -i "$figure_file" -f "$bioc_dir"
+      ;;
+    'step5' )
+      echo "step5: Extract subfigures"
       python figurex/get_subfigures.py -i "$figure_file" -o "$subfigure_file" -f "$bioc_dir"
       ;;
     * )
