@@ -2,10 +2,10 @@
 
 export PYTHONPATH=.
 
-disease='edema'
+disease='Adenoid cystic carcinoma'
 #source_dir=$HOME'/Subjects/PMCFigureX'
 #venv_dir=$HOME'/Subjects/venvs/pengyifan-wcm'
-data_dir=$HOME'/Data/PMCFigureX'
+data_dir=$HOME'/Data/derm'
 
 #cd "$source_dir" || exit
 #source "$venv_dir"/bin/activate
@@ -26,6 +26,11 @@ pmc_export_file=$disease_dir/$prefix.export2.csv
 figure_file=$disease_dir/$prefix.figures.csv
 subfigure_file=$disease_dir/$prefix.subfigures.csv
 
+subfigure_dir=$disease_dir
+[ -d "$subfigure_dir" ] || mkdir "$subfigure_dir"
+[ -d "$subfigure_dir/images" ] || mkdir "$subfigure_dir/images"
+[ -d "$subfigure_dir/labels" ] || mkdir "$subfigure_dir/labels"
+
 
 while [ "$1" != "" ]; do
   case "$1" in
@@ -43,8 +48,8 @@ while [ "$1" != "" ]; do
       python figurex/extract_figures_thread.py -i "$pmc_export_file" -o "$figure_file" -f "$bioc_dir"
       ;;
     'step4' )
-      echo "step4: Segment subfigures"
-      python figurex/segment_subfigures.py -i "$figure_file" -f "$bioc_dir"
+      echo "step4: prepare subfigures"
+      python figurex/prepare_subfigures.py -i "$figure_file" -f "$bioc_dir" -o "$subfigure_dir"
       ;;
     'step5' )
       echo "step5: Extract subfigures"

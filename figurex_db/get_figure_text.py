@@ -110,7 +110,7 @@ def create_figures(df, history_file=None) -> List[Figure]:
     return sorted(figures.values(), key=lambda f: f.pmcid)
 
 
-def get_figure_reffered_text(doc: bioc.BioCDocument, figure_id):
+def get_figure_referred_text(doc: bioc.BioCDocument, figure_id):
     p = re.compile(r'(\d)+$')
     m = p.search(figure_id)
     sentences = []
@@ -132,7 +132,7 @@ def add_text(figure: Figure, doc: bioc.BioCDocument):
             continue
         if 'file' in p.infons and p.infons["file"] == filename:
             id = p.infons['id']
-            passages = get_figure_reffered_text(doc, id)
+            passages = get_figure_referred_text(doc, id)
             figure.caption = p
             figure.referred_text = passages
             figure.id = id

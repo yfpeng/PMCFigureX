@@ -93,8 +93,16 @@ def get_taz_file(src, dest, oa_file_list, output_dir):
     ppprint.pprint_counter(cnt, percentage=False)
 
 
+def download_oa_file_list(oa_file_list):
+    if not oa_file_list.exists():
+        print('Downloading oa_file_list.csv')
+        download_taz_file('oa_file_list.csv', oa_file_list)
+
+
 if __name__ == '__main__':
     args = docopt.docopt(__doc__)
+    # download oa_file_list.csv
+    download_oa_file_list(Path(args['-a']))
     get_taz_file(src=Path(args['-i']),
                  dest=Path(args['-o']),
                  oa_file_list=Path(args['-a']),

@@ -3,7 +3,8 @@ import pandas as pd
 import tabulate
 
 
-def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t', use_tabulate=True, percentage=False):
+def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t',
+                   use_tabulate=True, percentage=False):
     if not sort_key:
         itr = counter.most_common()
     else:
@@ -20,7 +21,8 @@ def pprint_counter(counter: Counter, sort_key: bool = False, sep: str = '\t', us
 
     df = pd.DataFrame(data)
     if use_tabulate:
-        s = tabulate.tabulate(df, showindex=False, headers=df.columns, tablefmt="plain", )
+        s = tabulate.tabulate(df, showindex=False, headers=df.columns,
+                              tablefmt="plain", )
         print(s)
     else:
         for k, v, p in zip(df['key'], df['value'], df['%']):
